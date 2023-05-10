@@ -6,6 +6,7 @@ import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography } from '@mui/material';
 // components
 import Iconify from '../components/iconify';
+import server from '../_mock/server'
 // sections
 import {
   AppTasks,
@@ -21,6 +22,9 @@ import {
 import { fetchMain } from 'src/servies';
 import StarRatings from 'react-star-ratings';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setId } from '../store/reducers/id';
+
 
 // ----------------------------------------------------------------------
 const accessToken = ''
@@ -34,20 +38,27 @@ let widjetcolor1,widjetcolor4
 
 export default function DashboardAppPage() {
 
-  const [ id, setId ]= useState(sessionStorage.getItem("id"))
+  const [ uid, setIud ]= useState(sessionStorage.getItem("uid"))
   const [loading, setLoading] = useState(false);
   const accessToken=sessionStorage.getItem("accessToken")
-  const [ res, setres ]= useState(false)
+  const [ res, setRes ]= useState(false)
+  const [recommendNutrientData,setrecommendNutrientData] = useState()
+  const dispatch = useDispatch();
+  dispatch(setId(sessionStorage.getItem("uid")))
   useEffect(() => {
     const fetchData = async () => {
       setLoading(false);
        var response =await axios.post(
-        "http://192.168.1.9:3000/dashboard/app",{id},{headers:{
+        server.ip+"dashboard/app",{uid},{headers:{
           authorization: accessToken
         }}
       );
       console.log(response.data)
-      setres(response.data)
+      setRes(response.data)
+      console.log(res)
+      setrecommendNutrientData (Object.entries(response.data.recommendNutrient)
+      .map(([key, value]) => ({ label: key, value })))   
+      console.log(recommendNutrientData)
       setLoading(true);
     };
     fetchData();
@@ -69,10 +80,10 @@ else{
   widjetcolor4="error"
 }
   const theme = useTheme();
-  if(loading==false){
+  if(res==false){
     return("로딩중")
   }
-
+  console.log(res)
   return (
     <>
       <Helmet>
@@ -81,11 +92,11 @@ else{
 
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
-          안녕하세요 {id}님 
+          안녕하세요 {uid}님 
         </Typography>
-
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
+            {console.log(res)}
             <AppWidgetSummary title="건강점수" total= {res.healthScore} color={widjetcolor1} icon={'ant-design:android-filled'} />
           </Grid>
 
@@ -104,7 +115,7 @@ else{
           <Grid item xs={12} md={6} lg={5.5}>
             <AppWebsiteVisits
               title="영양소 섭취량"
-              subheader= {id+'님의 현재 영양제 섭취량입니다.'}
+              subheader= {uid+'님의 현재 영양제 섭취량입니다.'}
               userEating ={res.userEating}
               countNutrient={res.countNutrient}
               dailyEating={res.dailyEating}
@@ -118,9 +129,9 @@ else{
           <Grid item xs={12} md={6} lg={4}>
             <AppCurrentSubject
               title="필수 영양소 섭취량"
-              chartLabels={['비타민', '비타민', '비타민', '비타민', '비타민', '비타민']}
+              chartLabels={['비타민B6', '비타민D', '비타민C', '칼슘', '아연', '마그네슘']}
               chartData={[
-                { name: id+'님 의 섭취량', data: [80, 50, 30, 40, 100, 20] },
+                { name: uid+'님 의 섭취량', data: [80, 50, 30, 40, 100, 20] },
                 { name: '다른이용자평균', data: [20, 30, 40, 80, 20, 80] },
                 { name: '권장 섭취량', data: [44, 76, 78, 13, 43, 10] },
               ]}
@@ -128,40 +139,11 @@ else{
             />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={4}>
-            <AppCurrentVisits
-              title="섭취량 현황"
-              chartData={[
-                { label: '잘해요', value: 4344 },
-                { label: '', value: 5435 },
-                { label: '부족해요', value: 1443 },
-                { label: '과해요', value: 4443 },
-              ]}
-              chartColors={[
-                theme.palette.primary.main,
-                theme.palette.info.main,
-                theme.palette.warning.main,
-                theme.palette.error.main,
-              ]}
-            />
-          </Grid>
-
           <Grid item xs={12} md={6} lg={8}>
             <AppConversionRates
               title="이런영양소 먹는걸 추천해요"
-              subheader={id+"님을 위한 영양소 추천서비스에요"}
-              chartData={[
-                { label: 'Italy', value: 400 },
-                { label: 'Japan', value: 430 },
-                { label: 'China', value: 448 },
-                { label: 'Canada', value: 470 },
-                { label: 'France', value: 540 },
-                { label: 'Germany', value: 580 },
-                { label: 'South Korea', value: 690 },
-                { label: 'Netherlands', value: 1100 },
-                { label: 'United States', value: 1200 },
-                { label: 'United Kingdom', value: 1380 },
-              ]}
+              subheader={uid+"님을 위한 영양소 추천서비스에요"}
+              chartData={recommendNutrientData}
             />
           </Grid>
 
@@ -170,6 +152,7 @@ else{
           <Grid item xs={12} md={6} lg={8}>
             <AppNewsUpdate
               title="추천 영양제에요"
+              subheader={uid+"님꼐 맞춤형 영양제에요"}
               list={[...Array(5)].map((_, index) => ({
                 id: faker.datatype.uuid(),
                 title: dashchart[index],

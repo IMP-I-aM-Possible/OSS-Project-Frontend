@@ -9,24 +9,25 @@ import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import { fetchLogin } from "./servies";
+import { FetchLogin } from "./servies";
 import { ContactSupportOutlined } from '@mui/icons-material';
+import { useSelector } from 'react-redux';
 
 export default function Login() {
-  const [id, setid] = useState('');    // 사용자가 입력한 아이디 저장
+  const [uid, setid] = useState('');    // 사용자가 입력한 아이디 저장
   const [pw, setPw] = useState('');    // 사용자가 입력한 비밀번호 저장
-  console.log(id)
+  console.log(uid)
   let sessionStorage = window.sessionStorage
   const req = {
-    id,
+    uid,
     pw,
   }; 
   async function checklogin(){   
-    const loginres =  await fetchLogin(req);
+    const loginres =  await FetchLogin(req);
     console.log(loginres)
      if (loginres.sc=='200'){
        console.log('성공')
-      sessionStorage.setItem("id", loginres.id);
+      sessionStorage.setItem("uid", loginres.uid);
       sessionStorage.setItem("accessToken", loginres.accessToken);
       sessionStorage.setItem("refreshToken", loginres.refreshToken);
        window.location.replace("/dashboard/app");  
@@ -42,6 +43,7 @@ export default function Login() {
 
   return (
     <Container component="main" maxWidth="xs">
+      
       <Box
         sx={{
           marginTop: 8,
@@ -53,6 +55,7 @@ export default function Login() {
         <Avatar src="/broken-image.jpg" />
         <Typography component="h1" variant="h5">
           Sign in
+          {useSelector((state) => state.id.id)}
         </Typography>
         <TextField
           margin="normal"
@@ -61,7 +64,7 @@ export default function Login() {
           fullWidth
           name="id"
           autoComplete="id"
-          value={id}
+          value={uid}
           onChange={(e)=>setid(e.target.value)}
         />
         <TextField

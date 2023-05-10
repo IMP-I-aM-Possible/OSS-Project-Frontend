@@ -14,6 +14,7 @@ import StarRatings from 'react-star-ratings';
 import Link from '@mui/material/Link';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import server from '../_mock/server'
 // ----------------------------------------------------------------------
 
 
@@ -33,7 +34,7 @@ export default function ProductsPage() {
     const fetchData = async () => {
       setLoading(true);
       const response = await axios.get(
-        "http://192.168.1.9:3000/nutritional/include?offset="+page+"&info=all"
+        server.ip+"nutritional/include?offset="+page+"&info=all"
       );
       console.log(response.data.includeInfo)
       setPosts(response.data.includeInfo);
@@ -45,7 +46,7 @@ export default function ProductsPage() {
     const fetchData = async () => {
       setLoading(true);
       const response = await axios.get(
-        "http://192.168.1.9:3000/nutritional/include?offset="+page+"&info="+value
+        server.ip+"nutritional/include?offset="+page+"&info="+value
       );
       console.log(response.data.includeInfo)
       setPosts(response.data.includeInfo);
@@ -58,7 +59,7 @@ export default function ProductsPage() {
       setLoading(true);
       setPage(1)
       const response = await axios.get(
-        "http://192.168.1.9:3000/nutritional/include?offset="+page+"&info="+value
+        server.ip+"nutritional/include?offset="+page+"&info="+value
       );
       console.log(response.data.includeInfo)
       setPosts(response.data.includeInfo);
@@ -81,7 +82,7 @@ export default function ProductsPage() {
   const onChange =(e) =>{
     setValue(e.target.value)
   }
-
+  console.log(page)
   
   if(posts==false){
     return('로딩중')

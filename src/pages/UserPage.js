@@ -88,13 +88,13 @@ export default function UserPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [loading, setLoading] = useState(false);
-  const [ id, setId ]= useState(sessionStorage.getItem("id"))
+  const [ uid, setId ]= useState(sessionStorage.getItem("id"))
   const accessToken=sessionStorage.getItem("accessToken")
   useEffect(() => {
     const fetchData = async () => {
       setLoading(false);
        var response =await axios.post(
-        "http://192.168.1.9:3000/userpage",{id},{headers:{
+        "http://192.168.0.239:3000/userpage",{uid},{headers:{
           authorization: accessToken
         }}
       );
@@ -103,7 +103,7 @@ export default function UserPage() {
       setLoading(true);
     };
     fetchData();
-  }, []);
+  }, [loading]);
   if(loading==false){
     return('로딩중')
   }
@@ -124,7 +124,7 @@ export default function UserPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
+      const newSelecteds = USERLIST.map((n) => n.nid);
       setSelected(newSelecteds);
       return;
     }
@@ -160,6 +160,19 @@ export default function UserPage() {
     setFilterName(event.target.value);
   };
  
+  const onDelete = () =>{
+    const fetchData = async () => {
+      setLoading(false);
+       var res =await axios.post(
+        "http://192.168.0.239:3000/userpage/delete",{uid,selected}
+      );
+      console.log(res.data)
+      setLoading(true);
+      setSelected([]);
+    };
+    fetchData();
+
+  }
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
 
   const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
@@ -183,7 +196,7 @@ export default function UserPage() {
         </Stack>
 
         <Card>
-          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} onDelete={onDelete} />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
@@ -200,12 +213,12 @@ export default function UserPage() {
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                     const { uid, nid,name,count ,company, nutrient_info} = row;
-                    const selectedUser = selected.indexOf(name) !== -1;
+                    const selectedUser = selected.indexOf(nid) !== -1;
 
                     return (
                       <TableRow hover key={nid} tabIndex={-1} role="checkbox" selected={selectedUser}>
                         <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
+                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, nid)} />
                         </TableCell>
 
                         <TableCell component="th" scope="row" padding="none">

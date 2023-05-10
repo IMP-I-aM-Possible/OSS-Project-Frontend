@@ -51,7 +51,7 @@ NewsItem.propTypes = {
 };
 
 function NewsItem({ news }) {
-  const { image, title, description, postedAt } = news;
+  const { nid, company, name, nutrient_info } = news;
 
   return (
     <Stack direction="row" alignItems="center" spacing={2}>

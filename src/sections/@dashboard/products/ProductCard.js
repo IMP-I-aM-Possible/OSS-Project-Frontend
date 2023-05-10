@@ -8,7 +8,7 @@ import { fCurrency } from '../../../utils/formatNumber';
 import Label from '../../../components/label';
 import { ColorPreview } from '../../../components/color-utils';
 import StarRatings from 'react-star-ratings';
-
+import server from '../../../_mock/server'
 
 // ----------------------------------------------------------------------
 
@@ -28,12 +28,13 @@ ShopProductCard.propTypes = {
 
 export default function ShopProductCard({ product }) {
   console.log(product)
-  const { company, name, rating, id,iherb_price,naver_price} = product;
+  const { company, name, rating, nid,iherb_price,naver_price} = product;
   const price = Math.min(iherb_price,naver_price)
+  console.log(nid)
   return (
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        <StyledProductImg alt={name} src={'http://210.119.32.156:3000/image/'+id+'.jpg'} />
+        <StyledProductImg alt={name} src={server.ip+'image/'+nid+'.jpg'} />
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>

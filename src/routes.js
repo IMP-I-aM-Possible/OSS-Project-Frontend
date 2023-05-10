@@ -12,6 +12,7 @@ import DashboardAppPage from './pages/DashboardAppPage';
 import Loginp from './login';
 import Signup from './signup';
 import Signuser from './signuser';
+import ProductDetail  from './ProductDetailPage';
 
 // ----------------------------------------------------------------------
 
@@ -34,6 +35,10 @@ export default function Router() {
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
+        { path: 'products/:search', element: <ProductsPage /> },
+       
+        { path: 'productsdetail', element: <ProductDetail /> },
+        
         { path: 'blog', element: <BlogPage /> },
       ],
     },

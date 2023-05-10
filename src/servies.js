@@ -2,16 +2,14 @@
 import axios from 'axios';
 import user from './user';
 import debounce from 'lodash/debounce';
-
+import { useSelector } from 'react-redux';
 //import Cookies from 'js-cookie';
 
-export const fetchLogin = async (test) => {
-  console.log(test)
-  
+export const FetchLogin = async (test) => {
   //하는중 원래는 아래쪽
-  return await axios.post('http://192.168.1.9:3000/login', test)
+  return await axios.post('http://192.168.1.29:3000/login', test)
     .then(function (response) {
-      console.log(response.data.sc)
+      console.log(response.data)
         // user.User(response.data.id,response.data.sc,response.data.sc,response.data.sc,response.data.sc,response.data.sc)
         if(response.data.sc == '200'){   
             console.log("asdasdsad")
@@ -29,7 +27,7 @@ export const fetchLogin = async (test) => {
   export const fetchcheckId = async (test) => {
     console.log(test)
     //하는중 원래는 아래쪽
-    return await axios.post('http://192.168.1.9:3000/signup/check', test)
+    return await axios.post('http://192.168.0.239:3000/signup/check', test)
       .then(function (response) {
           console.log(response.data.sc)
           if(response.data.sc == '200'){
@@ -105,7 +103,7 @@ export const fetchLogin = async (test) => {
         console.log(test)
     
         //하는중 원래는 아래쪽
-        axios.post('http://192.168.1.9:3000/signup/info', test)
+        axios.post('http://192.168.0.239:3000/signup/info', test)
           .then(function (response) {
               console.log(response.data.sc)
               if(response.data.sc == '200')          
@@ -124,7 +122,7 @@ export const fetchLogin = async (test) => {
         console.log(test)
         
         //하는중 원래는 아래쪽
-        return await axios.post('http://192.168.1.9:3000/main', test)
+        return await axios.post('http://192.168.0.239:3000/main', test)
           .then(function (response) {
               console.log(response.data.sc)
               if(response.data.sc == '200')     

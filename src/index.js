@@ -6,7 +6,8 @@ import { HelmetProvider } from 'react-helmet-async';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import reportWebVitals from './reportWebVitals';
-
+import store from "./store/store";
+import { Provider } from "react-redux";
 // ----------------------------------------------------------------------
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -14,7 +15,10 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <HelmetProvider>
     <BrowserRouter>
-      <App />
+      <Provider store = {store}>
+        <App />
+    </Provider>
+     
     </BrowserRouter>
   </HelmetProvider>
 );

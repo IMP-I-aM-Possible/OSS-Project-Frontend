@@ -34,14 +34,19 @@ const StyledSearchbar = styled('div')(({ theme }) => ({
 
 export default function Searchbar() {
   const [open, setOpen] = useState(false);
-
+  const [value, setValue] = useState('');
   const handleOpen = () => {
     setOpen(!open);
   };
 
   const handleClose = () => {
     setOpen(false);
+    //window.location.replace("/dashboard/products/"+value); 
   };
+  const  handleSearch = () => {
+    setOpen(false);
+    window.location.replace("/dashboard/products/"+value); 
+  }
 
   return (
     <ClickAwayListener onClickAway={handleClose}>
@@ -59,6 +64,7 @@ export default function Searchbar() {
               fullWidth
               disableUnderline
               placeholder="Search…"
+              onChange={(e)=>setValue(e.target.value)}
               startAdornment={
                 <InputAdornment position="start">
                   <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
@@ -66,7 +72,7 @@ export default function Searchbar() {
               }
               sx={{ mr: 1, fontWeight: 'fontWeightBold' }}
             />
-            <Button variant="contained" onClick={handleClose}>
+            <Button variant="contained" onClick={handleSearch}>
               Search
             </Button>
           </StyledSearchbar>
