@@ -24,6 +24,7 @@ import {
   TablePagination,
 } from '@mui/material';
 // components
+import server from '../_mock/server'
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
@@ -88,13 +89,14 @@ export default function UserPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [loading, setLoading] = useState(false);
-  const [ uid, setId ]= useState(sessionStorage.getItem("id"))
+  const [ uid, setId ]= useState(sessionStorage.getItem("uid"))
   const accessToken=sessionStorage.getItem("accessToken")
   useEffect(() => {
     const fetchData = async () => {
       setLoading(false);
+      console.log(uid)
        var response =await axios.post(
-        "http://192.168.0.239:3000/userpage",{uid},{headers:{
+        server.ip+"userpage",{uid},{headers:{
           authorization: accessToken
         }}
       );
@@ -164,7 +166,7 @@ export default function UserPage() {
     const fetchData = async () => {
       setLoading(false);
        var res =await axios.post(
-        "http://192.168.0.239:3000/userpage/delete",{uid,selected}
+        server.ip+"userpage/delete",{uid,selected}
       );
       console.log(res.data)
       setLoading(true);
@@ -223,7 +225,7 @@ export default function UserPage() {
 
                         <TableCell component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={name} src={'http://210.119.32.156:3000/image/'+nid+'.jpg'} />
+                            <Avatar alt={name} src={server.ip+'image/'+nid+'.jpg'} />
                             <Typography variant="subtitle2" noWrap>
                               {name}
                             </Typography>

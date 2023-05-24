@@ -7,19 +7,21 @@ import ThirdCard from './productComponent/ThirdCard'
 import SecondCard from './productComponent/SecondCard'
 import FirstCard from './productComponent/FirstCard'
 import AlignItemsList from './productComponent/ReviewList'
-import {useState} from 'react'
+import { useState, useEffect } from "react"
+import axios from "axios"
 //import ForthCard from './ForthCard'
 import FifthCard from './productComponent/FifthCard'
 import SixCard from "./productComponent/SixCard";
 import {useRef } from 'react';
+import { useParams } from "react-router-dom";
 export default function ProductDetail() {
-
-  const [productInfo, setProductInfo] = useState({
+  //const [reviews, setReviews] = useState(productInfo.reviews)
+  /*const [productInfo, setProductInfo] = useState({
     id:"https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/amx/amx22860/v/18.jpg",
     name:"AMINOCORE BCAA BCAA 8G + 설탕 0 + 탄수화물 0 블루 라즈베리 0.69lbs(315g)",
     company: "ALLMAX",
     rating: 3.5,
-    sname1: "ihub",
+    sname1: "iherb",
     iherb_price: "31077",
     iherb_link:
       "https://kr.iherb.com/pr/allmax-aminocore-bcaa-blue-raspberry-0-69-lbs-315-g/98036",
@@ -70,11 +72,35 @@ export default function ProductDetail() {
       { usname: "Mark Smith", rscore: 3.5, text: "Average" },
       { usname: "Sarah Johnson", rscore: 5, text: "Amazing" }
     ],
-  });
+  });*/
+  //const [ nid, setId ]= useState(sessionStorage.getItem("id"))
+  const [loading, setLoading] = useState(false);
+  const accessToken=sessionStorage.getItem("accessToken")
+  const [ res, setres ]= useState(false)
+  const{nid}= useParams()
+  console.log(nid)
+   useEffect(() => {
+    const fetchData = async () => {
+      setLoading(false);
+       var response =await axios.get(
+        "http://192.168.1.29:3000/nutritional/"+nid
+      );
+      console.log(response.data)
+      setres(response.data)
+      setLoading(true);
+    };
+    fetchData();
+  }, []);
+
+  if(loading==false){
+    return("로딩중")
+  }
+  
 
   const nutrient = [];
   const sub_nutrient =[];
-  
+  //하드코딩
+  /*
   for (const [key, value] of Object.entries(productInfo.nutrient_info)) {
       nutrient.push({ nname: key, filledSize: value });
   }
@@ -84,38 +110,87 @@ export default function ProductDetail() {
 }
 
   const affects = Object.values(productInfo.affect);
-  //const affects = Object.values(productInfo.affect)
-  //const affects = productInfo.affect.map(item => item.효과);
-  console.log(affects)
-  console.log(sub_nutrient)
- 
-  const [reviews, setReviews] = useState(productInfo.reviews)
-  
+ */
+  for (const [key, value] of Object.entries(res.product.nutrient_info)) {
+    nutrient.push({ nname: key, filledSize: value });
+}
+
+for (const [key, value] of Object.entries(res.product.sub_nutrient_info)) {
+  sub_nutrient.push({ nname: key, size: value });
+}
+
+//const affects = Object.values(res.product.affect);
+
+
+  //하드 코딩
+  /*
   const compare=()=>{
-      if(productInfo.ihub_price>productInfo.naver_price){
+      if(productInfo.iherb_price>productInfo.naver_price){
         return (parseInt(productInfo.naver_price).toLocaleString())
       }else{
         return (parseInt(productInfo.iherb_price).toLocaleString())
       }
   }
   const compare_link=()=>{
-    if(productInfo.ihub_price>productInfo.naver_price){
+    if(productInfo.iherb_price>productInfo.naver_price){
       return (productInfo.naver_link)
     }else{
       return (productInfo.iherb_link)
     }
 }
+*/
 
-  const bottomContainerRef = useRef(null);
+const compare=()=>{
+  if(res.product.iherb_price>res.product.naver_price){
+    return (parseInt(res.product.naver_price).toLocaleString())
+  }else{
+    return (parseInt(res.product.iherb_price).toLocaleString())
+  }
+}
+const compare_link=()=>{
+if(res.product.iherb_price>res.product.naver_price){
+  return (res.product.naver_link)
+}else{
+  return (res.product.iherb_link)
+}
+}
+/*
+const price1=()=>{
+  if(res.product.iherb_price>500000000){
+    return ("해당 상품이 없습니다.")
+  }else{
+    return(res.product.iherb_price)
+  }
+  }
+}
+const price2=()=>{
+  if(res.product.naver_price>500000000){
+    return ("해당 상품이 없습니다.")
+  }else{
+    return(res.product.naver_price)
+  }
+}
+*/
 
   const handleReviewLinkClick = () => {
     window.location.href ="";
   };
+ 
   return (
       <Container sx={{mt:5}}>
+      
+       {//하드코딩
+        }{/*
         <Link size="large"  color="#78909c">{productInfo.company}</Link>
         -
         <Link size="large"  color="#78909c" onClick={handleReviewLinkClick}>{productInfo.name}</Link>
+        */}
+        <Link size="large"  color="#78909c">{res.product.company}</Link>
+        -
+        <Link size="large"  color="#78909c" onClick={handleReviewLinkClick}>{res.product.name}</Link>
+      
+        {//하드코딩
+        }{ /*
         <FirstCard 
           pimage ={productInfo.id}
           pname ={productInfo.name}
@@ -130,37 +205,64 @@ export default function ProductDetail() {
           lowPrice ={compare()}
           lowPrice_link = {compare_link()}
 
-        ></FirstCard>        
-        <Typography sx={{mt:10,mb:5,fontSize:25}}  variant="h3">
+        ></FirstCard>
+       */} 
+        <FirstCard 
+          
+          id ={res.product.nid}
+          pimage ={"http://192.168.1.29:3000/image/"+res.product.nid+'.jpg'}
+          pname ={res.product.name}
+          pform ={res.product.company}
+          prating ={res.product.rating}
+          sname1 ={"iherb"}
+          price1 ={parseInt(res.product.iherb_price).toLocaleString()}
+          plink1 ={res.product.iherb_link}
+          sname2 ={"naver"}
+          price2 ={parseInt(res.product.naver_price).toLocaleString()}
+          plink2 ={res.product.naver_link} 
+          lowPrice ={compare()}
+          lowPrice_link = {compare_link()}
+
+        ></FirstCard>
+   
+        <Typography  sx={{mt:10,mb:5,fontSize:25}}  variant="h3">
         영양제 영양소 확인
         </Typography>
         <SixCard 
           vitamins={nutrient}
           sub_Vitamins={sub_nutrient}
-          name='sixcard'
         >
+          
         </SixCard>
-        <Typography sx={{mt:10,mb:5,fontSize:25}}  variant="h3">
+        <Typography  sx={{mt:10,mb:5,fontSize:25}}  variant="h3">
           제품 효과 
         </Typography>
-        <SecondCard affect={affects}></SecondCard>
-        <Typography sx={{mt:10,mb:5,fontSize:25}}  variant="h3">
+       {// <SecondCard affect={affects}></SecondCard>
+}
+        <Typography  sx={{mt:10,mb:5,fontSize:25}}  variant="h3">
           복용법
         </Typography>
+        {// 하드코딩
+        }{/*
         <ThirdCard 
         eat={productInfo.daily_eating}
         caut={productInfo.caution}>
         </ThirdCard>
-        <Typography sx={{mt:10,mb:5,fontSize:25}}  variant="h3">
+        */}
+        <ThirdCard 
+        eat={res.product.daily_eating}
+        caut={res.product.caution}>
+      </ThirdCard>
+        <Typography  sx={{mt:10,mb:5,fontSize:25}}  variant="h3">
           제품 리뷰
         </Typography>
-        <AlignItemsList reviews={reviews}></AlignItemsList> 
-        <Typography sx={{mt:10,mb:5,fontSize:25}}  variant="h3">
+        <AlignItemsList reviews={res.review}></AlignItemsList> 
+
+        <Typography  sx={{mt:10,mb:5,fontSize:25}}  variant="h3">
           리뷰 작성
         </Typography>
-        <FifthCard/>
+        <FifthCard id={res.product.id}/>
 
       </Container>
-  
   );
 }

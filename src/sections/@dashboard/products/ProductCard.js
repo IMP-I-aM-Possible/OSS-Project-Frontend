@@ -43,7 +43,7 @@ export default function ShopProductCard({ product }) {
             {company}
           </Typography>
         </Link>
-        <Link color="inherit" underline="hover">
+        <Link color="inherit" underline="hover" onClick={()=>{window.location.replace("/dashboard/productsdetail/"+nid)}}>
           <Typography variant="subtitle2" >
             {name}
           </Typography>

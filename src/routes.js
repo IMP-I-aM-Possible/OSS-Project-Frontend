@@ -37,7 +37,7 @@ export default function Router() {
         { path: 'products', element: <ProductsPage /> },
         { path: 'products/:search', element: <ProductsPage /> },
        
-        { path: 'productsdetail', element: <ProductDetail /> },
+        { path: 'productsdetail/:nid', element: <ProductDetail /> },
         
         { path: 'blog', element: <BlogPage /> },
       ],

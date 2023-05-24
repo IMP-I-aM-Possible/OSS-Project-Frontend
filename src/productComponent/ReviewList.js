@@ -25,9 +25,9 @@ export default function AlignItemsList(props) {
   return (
     <Card sx={{ bgcolor: '#fafafa', color: 'background. paper', p: 2 }}>
       {currentReviews.map((review) => (
-        <ReviewCard key={review.usname} usname={review.usname} rscore={review.rscore} text={review.text} />
+        <ReviewCard key={review.uid} usname={review.uid} rscore={review.rating} text={review.review} />
       ))}
-      <Container fixed sx={{ width: 390, display: 'flex', alignItems: 'center' }}>
+      <Container sx={{ width: 390, display: 'flex', alignItems: 'center' }}>
         <Stack spacing={2}>
           <Pagination count={totalPages} page={currentPage} onChange={handlePageChange} />
         </Stack>

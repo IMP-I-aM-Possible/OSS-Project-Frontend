@@ -19,19 +19,21 @@ export default function FirstCard(props) {
             display="flex"
             justifyContent="flex-end"
             alignItems="flex-end"
-            sx={{mt:5,mr:5}}
+            sx={{mt:5,mr:3}}
           >
-          <OutlinedButtons  ></OutlinedButtons>
+          <OutlinedButtons nid={props.id}></OutlinedButtons>
           </Box>
           <Grid container>
             <Grid item  sx={{mt:0,mb:5,mr:0}}>
-              <CardMedia 
-              sx={{ml:5, height: 400,width:200 }}
+             <CardMedia 
+              sx={{ml:5,mr:2, height: 400,width:200 }}
               image={props.pimage}
               />
+              
             </Grid >
-            <Card sx={{mt:8,mb:5}}>
-            <Grid xs item  sx={{mt:3,ml:3,mr:10}}>
+            
+            <Card sx={{mt:0,mb:5,height: 400,width:400}}>
+            <Grid xs item  sx={{mt:1,ml:0,mr:0}}>
               <CardActions sx={{ml:1,mb:2}} >
                 <Link  size="large"  color="#78909c">{props.pfrom}</Link>
               </CardActions>
@@ -67,7 +69,7 @@ export default function FirstCard(props) {
               >
                 {props.sname1}
                 <a href={props.plink1}>
-                <span style={{ marginLeft: "110px" }}></span>
+                <span style={{ marginLeft: "60px" }}></span>
                 {props.price1}원
                 </a>
               </Typography>
@@ -82,7 +84,7 @@ export default function FirstCard(props) {
               >
                 {props.sname2}
                 <a href={props.plink2}>
-                <span style={{ marginLeft: "110px" }}></span>
+                <span style={{ marginLeft: "50px" }}></span>
                 {props.price2}원
                 </a>
               </Typography>

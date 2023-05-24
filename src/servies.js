@@ -4,10 +4,11 @@ import user from './user';
 import debounce from 'lodash/debounce';
 import { useSelector } from 'react-redux';
 //import Cookies from 'js-cookie';
+import server from './_mock/server'
 
 export const FetchLogin = async (test) => {
   //하는중 원래는 아래쪽
-  return await axios.post('http://192.168.1.29:3000/login', test)
+  return await axios.post(server.ip+'login', test)
     .then(function (response) {
       console.log(response.data)
         // user.User(response.data.id,response.data.sc,response.data.sc,response.data.sc,response.data.sc,response.data.sc)

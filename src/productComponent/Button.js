@@ -1,12 +1,39 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import { useState } from 'react';
+import server from '../_mock/server'
+import { useParams } from "react-router-dom";
+export default function OutlinedButtons(props) {
+    const{nid}= useParams()
+  const [Add, setAdd]= useState([])
+  const uid=sessionStorage.getItem("uid")
+  const count = 1
+    const handleClick = (event) => {event.preventDefault()
+        console.log('uid:', uid); 
+        console.log('nid:', nid); 
+        console.log('count:', count);
 
-export default function OutlinedButtons() {
+        fetch( server.ip+'add', {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({uid,nid,count}), // 'nid'와 'uid' 대신 'data'를 전송합니다
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('Add successful.');
+                // store submitted review
+                setAdd([...Add, {uid,nid,count}]); // 'add' 대신 'setSubmittedReviews' 사용
+            } else {
+                console.error('Error adding:', response.statusText);
+            }
+        })
+        .catch(error => console.error('Error adding:', error));
+    };
+
     return (
-        <Button  color="success" variant="outlined" href="#outlined-buttons" endIcon={<AddBoxIcon/>}>
+        <Button color="success" variant="outlined" href="#outlined-buttons" endIcon={<AddBoxIcon />} onClick={handleClick}>
           내가 먹는 영양제에 추가
         </Button>
     );
-  }
-  
+}

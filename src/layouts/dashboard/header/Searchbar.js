@@ -45,7 +45,7 @@ export default function Searchbar() {
   };
   const  handleSearch = () => {
     setOpen(false);
-    window.location.replace("/dashboard/products/"+value); 
+    window.location.replace("/dashboard/products?search="+value+"&type=1"); 
   }
 
   return (

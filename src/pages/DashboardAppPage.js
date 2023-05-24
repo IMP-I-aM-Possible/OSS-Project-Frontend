@@ -43,6 +43,7 @@ export default function DashboardAppPage() {
   const accessToken=sessionStorage.getItem("accessToken")
   const [ res, setRes ]= useState(false)
   const [recommendNutrientData,setrecommendNutrientData] = useState()
+  const [recommendNutrientData1,setrecommendNutrientData1] = useState()
   const dispatch = useDispatch();
   dispatch(setId(sessionStorage.getItem("uid")))
   useEffect(() => {
@@ -59,6 +60,13 @@ export default function DashboardAppPage() {
       setrecommendNutrientData (Object.entries(response.data.recommendNutrient)
       .map(([key, value]) => ({ label: key, value })))   
       console.log(recommendNutrientData)
+
+      const formattedData = response.data.recommendNutritional.map((item) => {
+      const {nid, company, name, nutrient_info} = item;
+      return {nid, company, name, nutrient_info};
+      });
+      setrecommendNutrientData1(formattedData)
+      console.log(formattedData)
       setLoading(true);
     };
     fetchData();
@@ -97,19 +105,19 @@ else{
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
             {console.log(res)}
-            <AppWidgetSummary title="건강점수" total= {res.healthScore} color={widjetcolor1} icon={'ant-design:android-filled'} />
+            <AppWidgetSummary title="건강점수" total= {res.healthScore} color={widjetcolor1} icon={'circum:pill'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="먹고있는 영양소 수" total={res.countNutrient} color="info" icon={'ant-design:apple-filled'} />
+            <AppWidgetSummary title="먹고있는 영양소 수" total={res.countNutrient} color="info" icon={'uil:cell'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="영양제 수" total={res.countNutritional} color="warning" icon={'ant-design:windows-filled'} />
+            <AppWidgetSummary title="영양제 수" total={res.countNutritional} color="warning" icon={'mdi:bottle-plus-outline'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="위험해요" total={res.tmtl} color={widjetcolor4} icon={'ant-design:bug-filled'} />
+            <AppWidgetSummary title="위험해요" total={res.tmtl} color={widjetcolor4} icon={'ion:warning-outline'} />
           </Grid>
 
           <Grid item xs={12} md={6} lg={5.5}>
@@ -153,13 +161,7 @@ else{
             <AppNewsUpdate
               title="추천 영양제에요"
               subheader={uid+"님꼐 맞춤형 영양제에요"}
-              list={[...Array(5)].map((_, index) => ({
-                id: faker.datatype.uuid(),
-                title: dashchart[index],
-                description: dashchart[index],
-                image: `/assets/images/covers/cover_${index + 1}.jpg`,
-                postedAt: faker.date.recent(),
-              }))}
+              list={recommendNutrientData1}
             />
           </Grid>
 

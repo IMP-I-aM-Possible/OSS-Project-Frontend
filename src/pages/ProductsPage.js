@@ -16,8 +16,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import server from '../_mock/server'
 // ----------------------------------------------------------------------
-
-
+import { useLocation, useParams } from "react-router-dom";
+import {useLoacation} from 'react-router-dom'
 
 export default function ProductsPage() {
   const offset = 1;
@@ -26,22 +26,45 @@ export default function ProductsPage() {
   const [posts, setPosts] = useState(false);
   const [page, setPage] = useState(1);
   const [value, setValue] = useState('all');
-
+  const{nid}= useParams()
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const search = searchParams.get('search'); // id 취득
+  const type = searchParams.get('type'); 
   const handlePageChange = (page) => {
     setPage(page);
   };
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+      let info
+      let domain
+      if(type==1){
+        info='name'
+        domain="nutritional/find"
+        console.log(type)
+      }
+      else if (type==2){
+        info='symptom'
+        domain="nutritional/find"
+      }
+      else{
+        info='all'
+        domain="nutritional/include"
+      }
+      console.log(info)
       const response = await axios.get(
-        server.ip+"nutritional/include?offset="+page+"&info=all"
+        server.ip+domain+"?offset="+page+"&info="+info+"&search="+search
       );
-      console.log(response.data.includeInfo)
+      // console.log(response.data.includeInfo)
+      // setPosts(response.data.includeInfo);
+      console.log(response.data)
       setPosts(response.data.includeInfo);
       setLoading(false);
     };
     fetchData();
   }, []);
+  console.log(search)
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -69,6 +92,8 @@ export default function ProductsPage() {
   }, [value]);
   
 
+
+
   const [openFilter, setOpenFilter] = useState(false);
 
   const handleOpenFilter = () => {
@@ -85,6 +110,9 @@ export default function ProductsPage() {
   console.log(page)
   
   if(posts==false){
+    return('로딩중')
+  }
+  if(posts==undefined){
     return('로딩중')
   }
   
@@ -128,4 +156,3 @@ export default function ProductsPage() {
   );
 
 }
-

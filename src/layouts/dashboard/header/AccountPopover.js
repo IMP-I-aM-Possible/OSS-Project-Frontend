@@ -5,7 +5,7 @@ import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover 
 // mocks_
 import account from '../../../_mock/account';
 import { useSelector } from 'react-redux';
-
+import Iconify from '../../../components/iconify';
 // ----------------------------------------------------------------------
 
 const MENU_OPTIONS = [
@@ -15,7 +15,7 @@ const MENU_OPTIONS = [
   },
   {
     label: 'Profile',
-    icon: 'eva:person-fill',
+    icon: 'bx:user',
   },
   {
     label: 'Settings',
@@ -55,7 +55,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" />
+        <Avatar icon={'bx:user'} alt="photoURL" />
       </IconButton>
 
       <Popover
