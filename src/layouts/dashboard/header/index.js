@@ -11,6 +11,8 @@ import Searchbar from './Searchbar';
 import AccountPopover from './AccountPopover';
 import LanguagePopover from './LanguagePopover';
 import NotificationsPopover from './NotificationsPopover';
+import Lottie from 'react-lottie';
+import LottieData from '../../../_mock/rotie/pill.json';
 
 // ----------------------------------------------------------------------
 
@@ -35,6 +37,14 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
     padding: theme.spacing(0, 5),
   },
 }));
+const defaultOptions = {
+  loop: true,
+  autoplay: true,
+  animationData: LottieData,
+  rendererSettings: {
+    preserveAspectRatio: 'xMidYMid slice',
+  },
+};
 
 // ----------------------------------------------------------------------
 
@@ -68,8 +78,7 @@ export default function Header({ onOpenNav }) {
             sm: 1,
           }}
         >
-          {/* <LanguagePopover />
-          <NotificationsPopover /> */}
+
           <AccountPopover />
         </Stack>
       </StyledToolbar>

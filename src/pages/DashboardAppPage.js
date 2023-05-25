@@ -188,7 +188,7 @@ else{
               title="Traffic by Site"
               list={[
                 {
-                  name: 'FaceBook',
+                  name: '사용자',
                   value: 323234,
                   icon: <Iconify icon={'eva:facebook-fill'} color="#1877F2" width={32} />,
                 },

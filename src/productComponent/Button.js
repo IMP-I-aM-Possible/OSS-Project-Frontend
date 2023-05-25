@@ -2,19 +2,17 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import { useState } from 'react';
-import server from '../_mock/server'
-import { useParams } from "react-router-dom";
 export default function OutlinedButtons(props) {
-    const{nid}= useParams()
   const [Add, setAdd]= useState([])
-  const uid=sessionStorage.getItem("uid")
+  const uid="test"
+  const nid= "test"
   const count = 1
     const handleClick = (event) => {event.preventDefault()
         console.log('uid:', uid); 
         console.log('nid:', nid); 
         console.log('count:', count);
 
-        fetch( server.ip+'add', {
+        fetch('http://172.16.37.236:3000/add', {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({uid,nid,count}), // 'nid'와 'uid' 대신 'data'를 전송합니다

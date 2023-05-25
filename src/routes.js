@@ -36,9 +36,7 @@ export default function Router() {
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'products/:search', element: <ProductsPage /> },
-       
         { path: 'productsdetail/:nid', element: <ProductDetail /> },
-        
         { path: 'blog', element: <BlogPage /> },
       ],
     },

@@ -9,6 +9,7 @@ import Label from '../../../components/label';
 import { ColorPreview } from '../../../components/color-utils';
 import StarRatings from 'react-star-ratings';
 import server from '../../../_mock/server'
+import { NavLink as RouterLink } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -43,11 +44,13 @@ export default function ShopProductCard({ product }) {
             {company}
           </Typography>
         </Link>
-        <Link color="inherit" underline="hover" onClick={()=>{window.location.replace("/dashboard/productsdetail/"+nid)}}>
+        <Link color="inherit" underline="hover" onClick={()=>{window.location.href="/dashboard/productsdetail/"+nid}}>
           <Typography variant="subtitle2" >
             {name}
           </Typography>
         </Link>
+        
+        
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Typography variant="subtitle1">
