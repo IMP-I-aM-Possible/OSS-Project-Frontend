@@ -8,15 +8,15 @@ export default function SecondCard(props) {
  
     return (
       <Card sx={{ backgroundColor: '#f5f5f5'}}> 
-        <Typography variant="h3" component="div" sx={{ml:3,mt:3,fontSize: 20 }}  gutterBottom>
+        <Typography variant="h3" component="div"  gutterBottom>
           복용효과
         </Typography>
         <CardContent sx={{display:"flex",flexDirection:"row"}}>
          
         {props.affect.map((item,idx) => (
           <BasicChips 
-            key={idx}
             affect={item}
+            key={idx}
           />
         ))}
         </CardContent>

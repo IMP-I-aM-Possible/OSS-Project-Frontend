@@ -16,7 +16,10 @@ import navConfig from './config';
 import { useSelector } from 'react-redux';
 import Lottie from 'react-lottie';
 import LottieData from '../../../_mock/rotie/chatbot.json';
+import LottielodingData from '../../../_mock/rotie/chatbotloading.json';
 import TextField from '@mui/material/TextField';
+import axios from 'axios';
+import server from '../../../_mock/server'
 // ----------------------------------------------------------------------
 
 const NAV_WIDTH = 320;
@@ -37,6 +40,14 @@ const defaultOptions = {
     preserveAspectRatio: 'xMidYMid slice',
   },
 };
+const defaultloadingOptions = {
+  loop: true,
+  autoplay: true,
+  animationData: LottielodingData,
+  rendererSettings: {
+    preserveAspectRatio: 'xMidYMid slice',
+  },
+};
 
 // ----------------------------------------------------------------------
 
@@ -52,15 +63,30 @@ export default function Nav({ openNav, onCloseNav }) {
   const [messages, setMessages] = useState('');
   const [inputText, setInputText] = useState('');
   const [chatbotopen, setchatbotopen] = useState(false);
+  const[chatbotres,setChatbotres]=useState([{}])
+  const [loading,setLoading] = useState(false)
   const handleInputChange = (event) => {
     setInputText(event.target.value);
   };
+  const fetchData = async () => {
+    setLoading(true);
+    setChatbotres([{}]);
+    const response = await axios.get(
+      server.ip+"ask/chatbot/"+inputText
+    );
+    console.log(JSON.parse(response.data))
+    setChatbotres(JSON.parse(response.data));
+    setLoading(false);
+  };
 
+  console.log(useSelector((state) => state.id.id))
   const handleSendMessage = () => {
     if (inputText.trim() !== '') {
       setMessages(inputText);
+      fetchData();
       setInputText('');
     }
+    
   }
   const onClick = () =>{
     chatbotopen==true?setchatbotopen(false):setchatbotopen(true)
@@ -86,11 +112,11 @@ export default function Nav({ openNav, onCloseNav }) {
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none">
           <StyledAccount>
-            <Avatar src={account.photoURL} alt="photoURL" />
+          <Avatar icon={'bx:user'} alt="photoURL" />
 
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {useSelector((state) => state.id.id)}
+                {sessionStorage.getItem("uid")}
               </Typography>
             </Box>
           </StyledAccount>
@@ -117,9 +143,27 @@ export default function Nav({ openNav, onCloseNav }) {
           </Typography>
           </Box>
           <Card sx={{height:200, width:290, overflow:'auto'}} variant="outlined">
-          <Typography sx={{ml:1,mt:0.5,mr:1}}variant="subtitle2" >
-            {"비타민 C와 비타민 D는 둘 다 중요한 영양소이지만, 그들은 서로 다른 기능과 특징을 가지고 있습니다.기능:비타민 C: 비타민 C는 항산화 작용을 통해 자유 라디칼을 중화시키고 세포 손상을 예방하는 역할을 합니다. 또한 콜라겐 생성을 촉진하여 피부, 연조직, 혈관, 뼈 등의 건강을 유지하는데 중요한 역할을 합니다. 비타민 C는 또한 철 흡수를 돕고 면역 체계를 강화하는 데에도 기여합니다.비타민 D: 비타민 D는 칼슘과 인의 흡수와 이용에 필수적입니다. 이는 뼈 건강을 유지하고 성장과 발달에 중요한 역할을 합니다. 비타민 D는 또한 면역 체계의 기능을 조절하고 염증을 감소시키는 데에도 기여합니다."}
+          {loading&&(
+          <Lottie
+          options={defaultloadingOptions}
+          height={100}
+          width={100}
+          isClickToPauseDisabled={true}
+        />
+          )}
+         {chatbotres != '' && (
+          <Typography sx={{ ml: 1, mt: 0.5, mr: 1 }} variant="subtitle2">
+          {chatbotres[0].gpt_answer}
           </Typography>
+)}
+
+{chatbotres.map((item, index) => (
+  <Link key={index} variant="subtitle2" sx={{ display: 'block' }} onClick={()=>{window.location.href="/dashboard/productsdetail/"+item.id}}>
+    {item.name}
+  </Link>
+))}
+
+
           </Card>
           <Box>
           <TextField

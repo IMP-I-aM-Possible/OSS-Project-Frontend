@@ -56,7 +56,7 @@ export default function AppWebsiteVisits({ title, subheader, userEating,countNut
     xaxis:{
       labels:{
         style:{
-          fontSize:'17px'
+          fontSize:'15px'
         }
 
       }
@@ -134,12 +134,20 @@ export default function AppWebsiteVisits({ title, subheader, userEating,countNut
   return (
     <Card {...other}>
       <CardHeader title={title} subheader={subheader} />
-
-      <Box sx={{ p: 3, pb: 3}} dir="ltr" style={{display:'flex',flexDirection:'row'}} >
-        {numchart.map((item) => (
-                   <ReactApexChart type="bar" key={name[item]+"chart"} series={chartdata1(name[item],Number(userEating[name[item]].eating),Number(userEating[name[item]].commend),Number(userEating[name[item]].max))} options={chartOptions} height={364} width={100} />                 
-              ))} 
-       
+  
+      <Box sx={{ p: 3, pb: 3 }} dir="ltr" style={{ overflowX: 'auto', width: '100%' }}>
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          {numchart.map((item) => (
+            <ReactApexChart
+              type="bar"
+              key={name[item] + 'chart'}
+              series={chartdata1(name[item], Number(userEating[name[item]].eating), Number(userEating[name[item]].commend), Number(userEating[name[item]].max))}
+              options={chartOptions}
+              height={364}
+              width={100}
+            />
+          ))}
+        </div>
       </Box>
     </Card>
   );

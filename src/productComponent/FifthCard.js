@@ -5,19 +5,23 @@ import Container from '@mui/material/Container';
 import WriteReview from './WriteReview'
 //import BasicRating from './Basicrating'
 export default function FifthCard(props) {
-    return (
-      //05.18변경
-      <Card sx={{mb:5,backgroundColor: '#f5f5f5' }}>
-        <Container fixed  sx={{
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: "center",
-            mb:2,mt:2
-          }}>
-        <WriteReview id={props.id}/>
-        </Container>
-      </Card>
+  return (
+    <Card 
+      sx={{
+        mb:5 , 
+        backgroundColor: '#f5f5f5'
+        }}>
+      <Container   
+        sx={{
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: "center",
+          mb:2,mt:2
+        }}>
+        <WriteReview uid={props.uid} nid={props.nid}/>
+      </Container>
+    </Card>
     );
   }
   

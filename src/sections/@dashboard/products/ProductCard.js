@@ -28,10 +28,8 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ product }) {
-  console.log(product)
   const { company, name, rating, nid,iherb_price,naver_price} = product;
   const price = Math.min(iherb_price,naver_price)
-  console.log(nid)
   return (
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>

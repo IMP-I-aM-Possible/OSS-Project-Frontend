@@ -5,6 +5,7 @@ import { styled } from '@mui/material/styles';
 import { Card, CardHeader } from '@mui/material';
 // components
 import { useChart } from '../../../components/chart';
+import { useTheme, alpha } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
@@ -41,7 +42,15 @@ AppCurrentSubject.propTypes = {
 };
 
 export default function AppCurrentSubject({ title, subheader, chartData, chartColors, chartLabels, ...other }) {
+  const theme = useTheme();
+  console.log(chartColors)
   const chartOptions = useChart({
+    colors: [
+      "#D6E4FF",
+      theme.palette.warning.main,
+      theme.palette.primary.main,
+      
+    ],
     stroke: { width: 2 },
     fill: { opacity: 0.48 },
     legend: { floating: true, horizontalAlign: 'center' },

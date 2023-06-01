@@ -1,10 +1,12 @@
 import { useState } from 'react';
 // @mui
 import { alpha } from '@mui/material/styles';
-import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
+import { Box, Dialog, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
 // mocks_
 import account from '../../../_mock/account';
 import { useSelector } from 'react-redux';
+
+import UserInformationChange from 'src/userSetting/userSettingPage';
 import Iconify from '../../../components/iconify';
 // ----------------------------------------------------------------------
 
@@ -17,16 +19,14 @@ const MENU_OPTIONS = [
     label: 'Profile',
     icon: 'bx:user',
   },
-  {
-    label: 'Settings',
-    icon: 'eva:settings-2-fill',
-  },
+ 
 ];
 
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
   const [open, setOpen] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -34,6 +34,15 @@ export default function AccountPopover() {
 
   const handleClose = () => {
     setOpen(null);
+  };
+
+  const handleSettingsClick = () => {
+    handleClose();
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
   };
 
   return (
@@ -79,7 +88,7 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {useSelector((state) => state.id.id)}
+            {sessionStorage.getItem("uid")}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
             {account.email}
@@ -94,6 +103,7 @@ export default function AccountPopover() {
               {option.label}
             </MenuItem>
           ))}
+          <MenuItem onClick={handleSettingsClick}>Settings</MenuItem>
         </Stack>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
@@ -102,6 +112,10 @@ export default function AccountPopover() {
           Logout
         </MenuItem>
       </Popover>
+
+      <Dialog open={dialogOpen} onClose={handleDialogClose}>
+        <UserInformationChange handleClose={handleDialogClose} />
+      </Dialog>
     </>
   );
 }

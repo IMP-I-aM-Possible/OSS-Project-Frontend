@@ -18,82 +18,47 @@ import server from '../_mock/server'
 // ----------------------------------------------------------------------
 import { useLocation, useParams } from "react-router-dom";
 import {useLoacation} from 'react-router-dom'
+import Loading from 'src/Loading';
 
 export default function ProductsPage() {
   const offset = 1;
-  const [nutritional,setnutritional]=useState([]);
+  const [count,setCount]=useState(0);
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState(false);
-  const [page, setPage] = useState(1);
-  const [value, setValue] = useState('all');
-  const{nid}= useParams()
+  
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const search = searchParams.get('search'); // id 취득
-  const type = searchParams.get('type'); 
+  const page=Number(searchParams.get('page')==null?1:searchParams.get('page'))
+  const value = (searchParams.get('value')==null?'all':searchParams.get('value'));
+  const{nid}= useParams()
+ console.log(page)
   const handlePageChange = (page) => {
-    setPage(page);
+    window.location.href="/dashboard/products?page="+page+"&value="+value+"&search="+search
   };
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      let info
       let domain
-      if(type==1){
-        info='name'
+   
+      if(value== "name" || value== "symptom"){
         domain="nutritional/find"
-        console.log(type)
-      }
-      else if (type==2){
-        info='symptom'
-        domain="nutritional/find"
+        console.log(value)
       }
       else{
-        info='all'
         domain="nutritional/include"
       }
-      console.log(info)
       const response = await axios.get(
-        server.ip+domain+"?offset="+page+"&info="+info+"&search="+search
+        server.ip+domain+"?offset="+page+"&info="+value+"&search="+search
       );
       // console.log(response.data.includeInfo)
       // setPosts(response.data.includeInfo);
       console.log(response.data)
-      setPosts(response.data.includeInfo);
+      setPosts(response.data);
       setLoading(false);
     };
     fetchData();
   }, []);
-  console.log(search)
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const response = await axios.get(
-        server.ip+"nutritional/include?offset="+page+"&info="+value
-      );
-      console.log(response.data.includeInfo)
-      setPosts(response.data.includeInfo);
-      setLoading(false);
-    };
-    fetchData();
-  }, [page]);
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      setPage(1)
-      const response = await axios.get(
-        server.ip+"nutritional/include?offset="+page+"&info="+value
-      );
-      console.log(response.data.includeInfo)
-      setPosts(response.data.includeInfo);
-      setLoading(false);
-    };
-    fetchData();
-  }, [value]);
-  
-
-
-
   const [openFilter, setOpenFilter] = useState(false);
 
   const handleOpenFilter = () => {
@@ -105,15 +70,14 @@ export default function ProductsPage() {
   };
  
   const onChange =(e) =>{
-    setValue(e.target.value)
+    window.location.href="/dashboard/products?value="+e.target.value
   }
   console.log(page)
-  
-  if(posts==false){
-    return('로딩중')
-  }
-  if(posts==undefined){
-    return('로딩중')
+
+  if(posts==undefined || posts==false){
+    return(
+      <Loading/>
+    )
   }
   
   return (
@@ -140,12 +104,11 @@ export default function ProductsPage() {
           </Stack>
         </Stack>
     
-        <ProductList products={posts} />
-        <ProductCartWidget />
+        <ProductList products={posts.includeInfo} />
         <Pagination
         activePage={page}
         itemsCountPerPage={48}
-        totalItemsCount={1000}
+        totalItemsCount={posts.len}
         pageRangeDisplayed={7}
         prevPageText={"‹"}
        nextPageText={"›"}

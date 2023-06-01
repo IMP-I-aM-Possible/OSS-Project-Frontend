@@ -9,6 +9,7 @@ import Iconify from '../components/iconify';
 import server from '../_mock/server'
 // sections
 import {
+  NutriRecommend,
   AppTasks,
   AppNewsUpdate,
   AppOrderTimeline,
@@ -18,23 +19,36 @@ import {
   AppWidgetSummary,
   AppCurrentSubject,
   AppConversionRates,
+
 } from '../sections/@dashboard/app';
 import { fetchMain } from 'src/servies';
 import StarRatings from 'react-star-ratings';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { setId } from '../store/reducers/id';
-
+import { setDATA } from '../store/reducers/maindata';
+import Loading  from 'src/Loading';
 
 // ----------------------------------------------------------------------
 const accessToken = ''
 const score = 90
 
-const dashchart=['비타민','비타민1','비타민2','비타민3','비타민','비타민','비타민','비타민','비타민','비타민','비타민'];
-
+const neednut =['비타민A', '비타민D', '비타민C', '칼슘', '아연', '마그네슘']
 
 let widjetcolor1,widjetcolor4
+function getDaysPassed(startDate) {
+  const today = new Date();
+  const start = new Date(startDate);
+  
+  // 밀리초 단위로 시간 차이 계산
+  const timeDiff = today.getTime() - start.getTime();
+  
+  // 일 단위로 시간 차이를 변환
+  const daysPassed = Math.floor(timeDiff / (1000 * 3600 * 24));
 
+  return daysPassed;
+}
+const startDate = '2023-05-01';
 
 export default function DashboardAppPage() {
 
@@ -44,8 +58,6 @@ export default function DashboardAppPage() {
   const [ res, setRes ]= useState(false)
   const [recommendNutrientData,setrecommendNutrientData] = useState()
   const [recommendNutrientData1,setrecommendNutrientData1] = useState()
-  const dispatch = useDispatch();
-  dispatch(setId(sessionStorage.getItem("uid")))
   useEffect(() => {
     const fetchData = async () => {
       setLoading(false);
@@ -56,11 +68,14 @@ export default function DashboardAppPage() {
       );
       console.log(response.data)
       setRes(response.data)
+      
       console.log(res)
-      setrecommendNutrientData (Object.entries(response.data.recommendNutrient)
-      .map(([key, value]) => ({ label: key, value })))   
-      console.log(recommendNutrientData)
-
+      const recommendedData = response.data.recommendNutrient.map(nutrient => {
+        const nutrientData = response.data.dailyEating.find(item => item.nutrient_name === nutrient);
+        return [nutrientData.nutrient_name, nutrientData.commend, nutrientData.unit];
+      });
+      setrecommendNutrientData(recommendedData)
+      
       const formattedData = response.data.recommendNutritional.map((item) => {
       const {nid, company, name, nutrient_info} = item;
       return {nid, company, name, nutrient_info};
@@ -68,6 +83,7 @@ export default function DashboardAppPage() {
       setrecommendNutrientData1(formattedData)
       console.log(formattedData)
       setLoading(true);
+
     };
     fetchData();
   }, []);
@@ -89,9 +105,12 @@ else{
 }
   const theme = useTheme();
   if(res==false){
-    return("로딩중")
+    return(
+      <Loading/>
+    )
   }
   console.log(res)
+
   return (
     <>
       <Helmet>
@@ -105,22 +124,22 @@ else{
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
             {console.log(res)}
-            <AppWidgetSummary title="건강점수" total= {res.healthScore} color={widjetcolor1} icon={'circum:pill'} />
+            <AppWidgetSummary title="건강점수" total= {res.healthScore==null?0:res.healthScore} color={widjetcolor1} icon={'circum:pill'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="먹고있는 영양소 수" total={res.countNutrient} color="info" icon={'uil:cell'} />
+            <AppWidgetSummary title="먹고있는 영양소 수" total={res.countNutrient==null?0:res.countNutrient} color="info" icon={'uil:cell'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="영양제 수" total={res.countNutritional} color="warning" icon={'mdi:bottle-plus-outline'} />
+            <AppWidgetSummary title="영양제 수" total={res.countNutritional==null?0:res.countNutritional} color="warning" icon={'mdi:bottle-plus-outline'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="위험해요" total={res.tmtl} color={widjetcolor4} icon={'ion:warning-outline'} />
+            <AppWidgetSummary title="위험해요" total={res.tmtl==null?0:res.tmtl} color={widjetcolor4} icon={'ion:warning-outline'} />
           </Grid>
-
-          <Grid item xs={12} md={6} lg={5.5}>
+          {res.countNutritional>0&&(
+          <Grid item xs={12} md={6} lg={6}>
             <AppWebsiteVisits
               title="영양소 섭취량"
               subheader= {uid+'님의 현재 영양제 섭취량입니다.'}
@@ -129,29 +148,41 @@ else{
               dailyEating={res.dailyEating}
 
 
-              
-
             />
           </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
+          )}
+          {res.countNutritional>0&&(
+          <Grid item xs={12} md={6} lg={6}>
             <AppCurrentSubject
               title="필수 영양소 섭취량"
-              chartLabels={['비타민B6', '비타민D', '비타민C', '칼슘', '아연', '마그네슘']}
+              chartLabels={neednut}
               chartData={[
-                { name: uid+'님 의 섭취량', data: [80, 50, 30, 40, 100, 20] },
-                { name: '다른이용자평균', data: [20, 30, 40, 80, 20, 80] },
-                { name: '권장 섭취량', data: [44, 76, 78, 13, 43, 10] },
+                { name: '권장 섭취량', data: [100, 100, 100, 100, 100, 100] },
+                { name: '다른이용자평균', data: [80, 40, 90, 80, 70, 60] },
+                { name: uid+'님 의 섭취량', data:neednut.map(nutrient => {
+                  const { eating, commend } = res.userEating[nutrient];
+                  console.log(eating/commend);
+                  return eating/commend*100>100?100:eating/commend*100
+                }) },
+                
               ]}
               chartColors={[...Array(6)].map(() => theme.palette.text.secondary)}
             />
+          </Grid>)}
+
+          <Grid item xs={12} md={6} lg={6}>
+            <AppConversionRates
+              title="영양소 섭취 현황판"
+              subheader={uid+"님의 영양소 섭취 현황입니다."}
+              userEating={res.userEating}
+            />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={8}>
-            <AppConversionRates
-              title="이런영양소 먹는걸 추천해요"
-              subheader={uid+"님을 위한 영양소 추천서비스에요"}
-              chartData={recommendNutrientData}
+          <Grid item xs={12} md={6} lg={6}>
+            <NutriRecommend
+              title="추천 영양소"
+              subheader={uid+"님의 추천 영양소 입니다."}
+              recommendNutrientData={recommendNutrientData}
             />
           </Grid>
 
@@ -162,70 +193,50 @@ else{
               title="추천 영양제에요"
               subheader={uid+"님꼐 맞춤형 영양제에요"}
               list={recommendNutrientData1}
+              title2="이것도 먹어보세요"
+              subheader2={uid+"님이 섭취하지않고있는 영양소에요"}
             />
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>
             <AppOrderTimeline
-              title="Order Timeline"
-              list={[...Array(5)].map((_, index) => ({
-                id: faker.datatype.uuid(),
-                title: [
-                  '1983, orders, $4220',
-                  '12 Invoices have been paid',
-                  'Order #37745 from September',
-                  'New order placed #XF-2356',
-                  'New order placed #XF-2346',
-                ][index],
-                type: `order${index + 1}`,
-                time: faker.date.past(),
-              }))}
+              title="최근 영양제 기록"
+              subheader={uid+"님의 기록이에요"}
+              list={res.log}
             />
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>
             <AppTrafficBySite
-              title="Traffic by Site"
+              title="우리 사이트는요..."
               list={[
                 {
-                  name: '사용자',
-                  value: 323234,
-                  icon: <Iconify icon={'eva:facebook-fill'} color="#1877F2" width={32} />,
+                  name: '사용자와',
+                  value: `${res.people} 명의`,
+                  icon: <Iconify icon={'pepicons-print:people'} color="#1877F2" width={32} />,
                 },
                 {
-                  name: 'Google',
-                  value: 341212,
-                  icon: <Iconify icon={'eva:google-fill'} color="#DF3E30" width={32} />,
+                  name: '영양제랑',
+                  value: 1001,
+                  icon: <Iconify icon={'mdi:pill'} color="#DF3E30" width={32} />,
                 },
                 {
-                  name: 'Linkedin',
-                  value: 411213,
-                  icon: <Iconify icon={'eva:linkedin-fill'} color="#006097" width={32} />,
+                  name: '영양소랑',
+                  value: 42,
+                  icon: <Iconify icon={'uil:cell'} color="#006097" width={32} />,
                 },
                 {
-                  name: 'Twitter',
-                  value: 443232,
-                  icon: <Iconify icon={'eva:twitter-fill'} color="#1C9CEA" width={32} />,
+                  name: '일 동안 함께했어요',
+                  value: getDaysPassed(startDate),
+                  icon: <Iconify icon={"streamline:interface-calendar-blank-calendar-date-day-month"} color="#1C9CEA" width={32} />,
                 },
               ]}
             />
           </Grid>
-      
-
-          <Grid item xs={12} md={6} lg={8}>
-            <AppTasks
-              title="Tasks"
-              list={[
-                { id: '1', label: 'Create FireStone Logo' },
-                { id: '2', label: 'Add SCSS and JS files if required' },
-                { id: '3', label: 'Stakeholder Meeting' },
-                { id: '4', label: 'Scoping & Estimations' },
-                { id: '5', label: 'Sprint Showcase' },
-              ]}
-            />
-          </Grid>
+    
         </Grid>
       </Container>
+    
     </>
   );
 }

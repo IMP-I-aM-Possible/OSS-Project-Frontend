@@ -28,7 +28,7 @@ export const FetchLogin = async (test) => {
   export const fetchcheckId = async (test) => {
     console.log(test)
     //하는중 원래는 아래쪽
-    return await axios.post('http://192.168.0.239:3000/signup/check', test)
+    return await axios.post(server.ip+'signup/check', test)
       .then(function (response) {
           console.log(response.data.sc)
           if(response.data.sc == '200'){
@@ -47,7 +47,7 @@ export const FetchLogin = async (test) => {
     export const fetchcheckUsername = async (test) => {
       console.log(test)
       //하는중 원래는 아래쪽
-      return await axios.post('http://192.168.1.9:3000/signup/usernameCheck', test)
+      return await axios.post(server.ip+'signup/usernameCheck', test)
         .then(function (response) {
             console.log(response.data.sc)
             if(response.data.sc == '200'){
@@ -66,7 +66,7 @@ export const FetchLogin = async (test) => {
       export const fetchcheckEmail = async (test) => {
         console.log(test)
         //하는중 원래는 아래쪽
-        return await axios.post('http://192.168.1.9:3000/signup/emailCheck', test)
+        return await axios.post(server.ip+'signup/emailCheck', test)
           .then(function (response) {
               console.log(response.data.sc)
               if(response.data.sc == '200'){
@@ -85,9 +85,9 @@ export const FetchLogin = async (test) => {
 
     export const fetchSignup = async (test) => {
       console.log(test)
-  
+      console.log(server.ip+'signup')
       //하는중 원래는 아래쪽
-      return await axios.post('http://192.168.1.9:3000/signup', test)
+      return await axios.post('http://192.168.1.22:3000/signup', test)
         .then(function (response) {
             console.log(response.data.sc)
             if(response.data.sc == '200')          

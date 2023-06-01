@@ -1,50 +1,41 @@
-import PropTypes from 'prop-types';
-import ReactApexChart from 'react-apexcharts';
-// @mui
+
 import { Box, Card, CardHeader } from '@mui/material';
 // utils
 import { fNumber } from '../../../utils/formatNumber';
 // components
-import { useChart } from '../../../components/chart';
-
+import Label from '../../../components/label';
 // ----------------------------------------------------------------------
-
-AppConversionRates.propTypes = {
-  title: PropTypes.string,
-  subheader: PropTypes.string,
-  chartData: PropTypes.array.isRequired,
-};
-
-export default function AppConversionRates({ title, subheader, chartData, ...other }) {
-  const chartLabels = chartData.map((i) => i.label);
-
-  const chartSeries = chartData.map((i) => i.value);
-
-  const chartOptions = useChart({
-    tooltip: {
-      marker: { show: false },
-      y: {
-        formatter: (seriesName) => fNumber(seriesName),
-        title: {
-          formatter: () => '',
-        },
-      },
-    },
-    plotOptions: {
-      bar: { horizontal: true, barHeight: '28%', borderRadius: 2 },
-    },
-    xaxis: {
-      categories: chartLabels,
-    },
-  });
-
+const AppConversionRates = (props) => {
+  console.log(props.userEating)
   return (
-    <Card {...other}>
-      <CardHeader title={title} subheader={subheader} />
+    <Card >
+      <CardHeader title={props.title} subheader={props.subheader} sx={{mb:1}}/>
 
-      <Box sx={{ mx: 3 }} dir="ltr">
-        <ReactApexChart type="bar" series={[{ data: chartSeries }]} options={chartOptions} height={364} />
+      <Box sx={{ mx: 3 ,mb:2}} dir="ltr">
+      {Object.entries(props.userEating).map(([key, value]) => {
+    const { eating, commend, max, unit } = value;
+    let color;
+
+    if (eating > commend && max && eating > max) {
+      color = 'error';
+    } else if (eating > commend) {
+      color = 'success';
+    } else {
+      color = 'warning';
+    }
+
+    return (
+      <Label color={color} key={key} style={{ fontSize: '1em', margin: '0.08em' }}>
+        {`${key}:${eating}${unit}`}
+      </Label>
+    );
+  })
+}
+
       </Box>
     </Card>
   );
 }
+
+
+export default AppConversionRates

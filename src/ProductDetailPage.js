@@ -1,10 +1,12 @@
 
 import Container from '@mui/material/Container';
 import * as React from 'react';
+import OutlinedButtons from './productComponent/Button'
+import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import ThirdCard from './productComponent/ThirdCard'
-import SecondCard from './productComponent/SecondCard'
+//import SecondCard from './productComponent/SecondCard'
 import FirstCard from './productComponent/FirstCard'
 import AlignItemsList from './productComponent/ReviewList'
 import { useState, useEffect } from "react"
@@ -15,12 +17,14 @@ import SixCard from "./productComponent/SixCard";
 import {useRef } from 'react';
 import server from './_mock/server'
 import { useParams } from "react-router-dom";
+import Loading from './Loading';
 export default function ProductDetail() {
 
-  const [ id, setId ]= useState(sessionStorage.getItem("id"))
+  const [ uid, setId ]= useState(sessionStorage.getItem("uid"))
   const [loading, setLoading] = useState(false);
   const accessToken=sessionStorage.getItem("accessToken")
   const [ res, setres ]= useState(false)
+  const [ resmain, setresmain ]= useState(false)
   const{nid}= useParams()
    useEffect(() => {
     const fetchData = async () => {
@@ -32,12 +36,25 @@ export default function ProductDetail() {
       setres(response.data)
       setLoading(true);
     };
+    const fetchDataSub = async () => {
+      setLoading(false);
+      var response =await axios.post(
+        server.ip+"dashboard/app",{uid},{headers:{
+          authorization: accessToken
+        }}
+      );
+      console.log(response.data)
+      setresmain(response.data)
+      setLoading(true);
+    };
     fetchData();
+    fetchDataSub();
   }, []);
 
-  if(loading==false){
-    return("로딩중")
-  }
+  if(res==false){
+    return(
+      <Loading/>
+    )}
   
 
   const nutrient = [];
@@ -74,11 +91,18 @@ if(res.product.iherb_price>res.product.naver_price){
  
   return (
       <Container sx={{mt:5}}>
-
+        <Box
+        display="flex"
+        justifyContent="flex-end"
+        alignItems="flex-end"
+        sx={{mt:0,mr:0}}
+        >
+        <OutlinedButtons nid={res.product.nid}></OutlinedButtons>
+        </Box>
         <Link size="large"  color="#78909c">{res.product.company}</Link>
         -
         <Link size="large"  color="#78909c" onClick={handleReviewLinkClick}>{res.product.name}</Link>
-      
+        
 
         <FirstCard 
           
@@ -98,36 +122,39 @@ if(res.product.iherb_price>res.product.naver_price){
 
         ></FirstCard>
    
-        <Typography  sx={{mt:10,mb:5,fontSize:25}}  variant="h3">
+        <Typography sx={{mt:5}}variant="h4" component="div"  gutterBottom>
         영양제 영양소 확인
         </Typography>
         <SixCard 
           vitamins={nutrient}
           sub_Vitamins={sub_nutrient}
+          nutrientcommend={res.nutrientcommend}
+          resmain={resmain}
         >
           
         </SixCard>
-        <Typography  sx={{mt:10,mb:5,fontSize:25}}  variant="h3">
+        {/*
+        <Typography variant="h3" component="div"  gutterBottom>
           제품 효과 
         </Typography>
-   
-        <Typography  sx={{mt:10,mb:5,fontSize:25}}  variant="h3">
+        */}
+        <Typography  sx={{mt:5}} variant="h4" component="div"  gutterBottom>
           복용법
         </Typography>
 
         <ThirdCard 
         eat={res.product.daily_eating}
         caut={res.product.caution}>
-      </ThirdCard>
-        <Typography  sx={{mt:10,mb:5,fontSize:25}}  variant="h3">
+        </ThirdCard>
+        <Typography sx={{mt:5}} variant="h4" component="div"  gutterBottom>
           제품 리뷰
         </Typography>
         <AlignItemsList reviews={res.review}></AlignItemsList> 
 
-        <Typography  sx={{mt:10,mb:5,fontSize:25}}  variant="h3">
+        <Typography sx={{mt:5}} variant="h4" component="div"  gutterBottom>
           리뷰 작성
         </Typography>
-        <FifthCard id={res.product.id}/>
+        <FifthCard uid={uid} nid={nid}/>
 
       </Container>
   );

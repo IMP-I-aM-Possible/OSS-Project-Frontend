@@ -10,6 +10,7 @@ export const idSlice = createSlice({
   reducers: {
     setId: (state, action) => {
       state.id = action.payload;
+      console.log(state.id)
     },
   },
 });

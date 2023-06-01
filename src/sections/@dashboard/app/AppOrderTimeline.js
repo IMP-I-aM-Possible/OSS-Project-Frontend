@@ -4,7 +4,9 @@ import { Card, Typography, CardHeader, CardContent } from '@mui/material';
 import { Timeline, TimelineDot, TimelineItem, TimelineContent, TimelineSeparator, TimelineConnector } from '@mui/lab';
 // utils
 import { fDateTime } from '../../../utils/formatTime';
-
+import server from '../../../_mock/server'
+import { Box,Link } from '@mui/material';
+import Label from '../../../components/label';
 // ----------------------------------------------------------------------
 
 AppOrderTimeline.propTypes = {
@@ -27,7 +29,7 @@ export default function AppOrderTimeline({ title, subheader, list, ...other }) {
       >
         <Timeline>
           {list.map((item, index) => (
-            <OrderItem key={item.id} item={item} isLast={index === list.length - 1} />
+            <OrderItem key={item.nid} item={item} isLast={index === list.length - 1} />
           ))}
         </Timeline>
       </CardContent>
@@ -37,39 +39,41 @@ export default function AppOrderTimeline({ title, subheader, list, ...other }) {
 
 // ----------------------------------------------------------------------
 
-OrderItem.propTypes = {
-  isLast: PropTypes.bool,
-  item: PropTypes.shape({
-    time: PropTypes.instanceOf(Date),
-    title: PropTypes.string,
-    type: PropTypes.string,
-  }),
-};
 
 function OrderItem({ item, isLast }) {
-  const { type, title, time } = item;
+  const { expired_at, nid,name, updated_at } = item;
   return (
     <TimelineItem>
       <TimelineSeparator>
         <TimelineDot
           color={
-            (type === 'order1' && 'primary') ||
-            (type === 'order2' && 'success') ||
-            (type === 'order3' && 'info') ||
-            (type === 'order4' && 'warning') ||
+            (expired_at === null && 'success') ||
+            (expired_at === 'order3' && 'error') ||
             'error'
           }
         />
+        
         {isLast ? null : <TimelineConnector />}
       </TimelineSeparator>
 
       <TimelineContent>
-        <Typography variant="subtitle2">{title}</Typography>
+  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <Box component="img" src={server.ip + 'image/' + nid + '.jpg'} sx={{ width: 48, height: 48, borderRadius: 1.5, flexShrink: 0 }} />
 
-        <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-          {fDateTime(time)}
-        </Typography>
-      </TimelineContent>
+    <Box sx={{ ml: 2, flexGrow: 1 }}>
+      <Typography variant="subtitle2" noWrap>
+        <Link color="inherit" underline="hover" onClick={() => { window.location.href = '/dashboard/productsdetail/' + nid }}>
+          {name}
+        </Link>
+      </Typography>
+
+      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+        {fDateTime(updated_at)}
+      </Typography>
+    </Box>
+
+  </Box>
+</TimelineContent>
     </TimelineItem>
   );
 }

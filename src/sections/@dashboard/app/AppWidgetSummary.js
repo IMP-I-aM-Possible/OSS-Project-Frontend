@@ -1,21 +1,17 @@
-// @mui
-import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import PropTypes from 'prop-types';
 import { alpha, styled } from '@mui/material/styles';
 import { Card, Typography } from '@mui/material';
 // utils
 import { fShortenNumber } from '../../../utils/formatNumber';
+import { useSpring, animated } from 'react-spring';
+import { useEffect,useState } from 'react';
 // components
 import Iconify from '../../../components/iconify';
-import AnimatedProgressProvider from "./AnimatedProgressProvider";
-
-
-
 
 // ----------------------------------------------------------------------
 const percentage = 66;
-const StyledIcon = styled('div')(({ theme }) => ({
+const StyledIcon = styled(animated.div)(({ theme }) => ({
   margin: 'auto',
   display: 'flex',
   borderRadius: '50%',
@@ -37,11 +33,21 @@ AppWidgetSummary.propTypes = {
 };
 
 export default function AppWidgetSummary({ title, total, icon, color = 'primary', sx, ...other }) {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    setShow(true);
+  }, []);
+
+  const iconSpring = useSpring({
+    from: { opacity: 0, transform: 'scale(0)' },
+    to: { opacity: 1, transform: 'scale(1)' },
+    config: { tension: 300, friction: 20 },
+    delay: 200,
+  });
+
   return (
     <Card
-
-
-        
       sx={{
         py: 5,
         boxShadow: 0,
@@ -52,18 +58,8 @@ export default function AppWidgetSummary({ title, total, icon, color = 'primary'
       }}
       {...other}
     >
-      
-      <StyledIcon
-        sx={{
-          color: (theme) => theme.palette[color].dark,
-          backgroundImage: (theme) =>
-            `linear-gradient(135deg, ${alpha(theme.palette[color].dark, 0)} 0%, ${alpha(
-              theme.palette[color].dark,
-              0.24
-            )} 100%)`,
-        }}
-      >
-        <Iconify icon={icon} width={24} height={24} />
+      <StyledIcon style={iconSpring}>
+        <Iconify icon={icon} width={35} height={35} />
       </StyledIcon>
 
       <Typography variant="h3">{fShortenNumber(total)}</Typography>
@@ -71,7 +67,6 @@ export default function AppWidgetSummary({ title, total, icon, color = 'primary'
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         {title}
       </Typography>
-      
     </Card>
   );
 }

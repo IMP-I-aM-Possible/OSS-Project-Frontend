@@ -17,9 +17,26 @@ import { fetchSignup,fetchcheckId,fetchcheckUsername,fetchcheckEmail} from "./se
 import CheckIcon from '@mui/icons-material/Check';
 import InputAdornment from '@mui/material/InputAdornment';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import Autocomplete from '@mui/material/Autocomplete';
 
+const yearOptions = [];
+for (let year = 1970; year <= 2023; year++) {
+  yearOptions.push(year.toString());
+}
 
+const monthOptions = [
+  '1','2','3','4','5','6','7','8','9','10','11','12'
+  // 월 옵션을 필요한 범위와 형식에 맞게 추가할 수 있습니다.
+];
 
+const dayOptions = [
+  '1',
+  '2',
+  '3',
+  // 일 옵션을 필요한 범위와 형식에 맞게 추가할 수 있습니다.
+];
 
 function Copyright(props) {
   return (
@@ -63,6 +80,53 @@ export default function SignUp() {
   const [confirmpassword_error,setconfirmpassword_error] = useState(false);
   const [confirmpassword_message,setconfirmpassword_message] = useState('');
 
+  const [height,setheight] = useState('');
+  const [height_error,setheight_error] = useState(false);
+  const [height_message,setheight_message] = useState('');
+  const [height_check,setheight_check] = useState('');
+
+
+  const [weight,setweight] = useState('');
+  const [weight_error,setweight_error] = useState(false);
+  const [weight_message,setweight_message] = useState('');
+  const [weight_check,setweight_check] = useState('');
+
+  const [gender,setgender] = useState('');
+  const [gender_error,setgender_error] = useState(false);
+  const [gender_message,setgender_message] = useState('');
+
+  const [age,setage] = useState('');
+  const [age_error,setage_error] = useState(false);
+  const [age_message,setage_message] = useState('');
+  const [year, setYear] = useState(null);
+  const [month, setMonth] = useState(null);
+  const [day, setDay] = useState(null);
+  
+  const getDaysInMonth = (year, month) => {
+    return new Date(year, month, 0).getDate();
+  };
+  const dayOptions = [];
+const selectedYear = parseInt(year);
+const selectedMonth = parseInt(month);
+
+if (selectedYear && selectedMonth) {
+  const daysInMonth = getDaysInMonth(selectedYear, selectedMonth);
+  for (let day = 1; day <= daysInMonth; day++) {
+    dayOptions.push(day.toString());
+  }
+}
+  const handleYearChange = (event, value) => {
+    setYear(value);
+  };
+
+  const handleMonthChange = (event, value) => {
+    setMonth(value);
+  };
+
+  const handleDayChange = (event, value) => {
+    setDay(value);
+  };
+
   const id_onChange = (e)=> {
     setid(e.target.value)
   }
@@ -72,8 +136,9 @@ export default function SignUp() {
     } 
   }, [id])
   async function id_onBlur(e){
+    const uid= id
     const req = {
-      id
+      uid
     };
     const checkreq = await fetchcheckId(req)
     console.log(checkreq)
@@ -161,7 +226,7 @@ export default function SignUp() {
     if(username_check=='success'){
       return (<CheckIcon fontSize="small"/> )
     }
-    else if (username_check=='fail'){
+    else if (username_check=='fail' ){
       return (<HighlightOffIcon fontSize="small"/>)
     }
     else{
@@ -282,25 +347,149 @@ const password_validation =()=>{
       setconfirmpassword_message('')
     }
   } 
-  const handleSubmit = async (event) => {
 
+  const height_onChange = (e)=> {
+    setheight(e.target.value)
+  }
+  useEffect(() => {
+  	if(height.length>0) {
+    	height_validation();
+    } 
+  }, [height])
+  async function height_onBlur(e){
+
+    console.log(height)
+
+  }
+
+  const height_validation =()=>{
+    let check = /^\d+(\.\d+)?$/;
+    console.log(height)
+    if(!check.test(height)){
+      setheight_error(true)
+      setheight_message("유효한값이아닙니다.")
+      setheight_check('fail')
+    }
+    else{
+      setheight_error(false)
+      setheight_message('')
+      setheight_check('suceess')
+    }
+  }
+
+  function heightcheckicon() {
+    if(height_check=='success'){
+      return (<CheckIcon fontSize="small"/> )
+    }
+    else if (height_check=='fail'){
+      return (<HighlightOffIcon fontSize="small"/>)
+    }
+    else{
+      return('')
+    }
+  }
+
+
+  const weight_onChange = (e)=> {
+    setweight(e.target.value)
+  }
+  useEffect(() => {
+  	if(weight.length>0) {
+    	weight_validation();
+    } 
+  }, [weight])
+  async function weight_onBlur(e){
+    
+    console.log(weight)
+  }
+
+  const weight_validation =()=>{
+    let check = /^\d+(\.\d+)?$/;
+    console.log(weight)
+    if(!check.test(weight)){
+        setweight_error(true)
+        setweight_message("유효한 값이 아닙니다.")
+    }
+    else{
+        setweight_error(false)
+        setweight_message('')
+    }
+  }
+
+  function weightcheckicon() {
+    if(weight_check=='success'){
+      return (<CheckIcon fontSize="small"/> )
+    }
+    else if (weight_check=='fail'){
+      return (<HighlightOffIcon fontSize="small"/>)
+    }
+    else{
+      return('')
+    }
+  }
+
+  const gender_onChange = (e)=> {
+    setgender(e.target.value)
+  }
+
+  const age_onChange = (e)=> {
+    setage(e.target.value)
+    
+  }
+  useEffect(() => {
+  	if(age.length>0) {
+    	age_validation();
+    } 
+  }, [age])
+  const age_onBlur = (e)=> {
+    console.log(age)
+  }
+
+  const age_validation =()=>{
+    let age_check = /[~!@#$%^&*()_+|<>?:{}.,/;='"ㄱ-ㅎ | ㅏ-ㅣ |가-힣]/;
+    console.log(age)
+    if(!age_check.test(age)){
+      setage_error(true)
+      setage_message("이메일의 형식이 올바르지 않습니다.")
+    }
+
+    else{
+      setage_error(false)
+      setage_message('사용가능한 이메일입니다.')
+    }
+  } 
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    const formData = new FormData(event.target);
+    formData.set('year', year);
+    formData.set('month', month);
+    formData.set('day', day);
     const data = new FormData(event.currentTarget);
-      const id = data.get('id')
-      const username=data.get('username');
-      const email=data.get('email');
-      const pw=data.get('password');
-  
+    const uid = data.get('id');
+    const username = data.get('username');
+    const email = data.get('email');
+    const pw = data.get('password');
+    const height = Number(data.get('height'));
+    const weight = Number(data.get('weight'));
+    const gender = data.get('gender');
+    const health = 0;
+    const birth =(year + '-' + month + '-' + day);
+
+    console.log(birth)
     const req = {
-        id,
+        uid,
         email,
         pw,
         username,
+        height,
+        weight,
+        gender,
+        birth,
       };
     const signres = await fetchSignup(req);
-    console.log(signres)
+    console.log(req)
     if (signres=='success'){
-      window.location.replace("/signuser?id="+id);  
+      window.location.replace("/");  
     }
     console.log(req)
   };
@@ -388,6 +577,13 @@ const password_validation =()=>{
                   onChange={email_onChange}
                   error={email_error}
                   helperText={email_message}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                          {usernamecheckicon()}
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -422,12 +618,92 @@ const password_validation =()=>{
                   
                 />
               </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
+            <Grid item xs={12} display="flex" >
+                <TextField
+                  name="height"
+                  required
+                  id="height"
+                  label="키"
+                  autoFocus   
+                  value={height} 
+                  onBlur={height_onBlur}
+                  onChange={height_onChange}
+                  error={height_error}
+                  helperText={height_message}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                          {heightcheckicon()}
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                 <TextField
+                  name="weight"
+                  required
+                  id="weight"
+                  label="몸무게"
+                  autoFocus   
+                  value={weight} 
+                  onBlur={weight_onBlur}
+                  onChange={weight_onChange}
+                  error={weight_error}
+                  helperText={weight_message}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                          {weightcheckicon()}
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
+              <Grid container xs={12} justifyContent="center" alignItems="center" >
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                name="gender"
+                onChange={gender_onChange }
+                row
+               >
+                <FormControlLabel value="M" control={<Radio />} label="남자" />
+                <FormControlLabel value="W" control={<Radio />} label="여자" />
+              </RadioGroup>
+              </Grid>
+                       
+             
+              <Grid item xs={12} display="flex" spacing={2}>
+              <Autocomplete
+                name='year'
+                sx={{width:"40%"}}
+                options={yearOptions}
+                getOptionLabel={(option) => option}
+                 value={year}
+                onChange={handleYearChange}
+                renderInput={(params) => <TextField {...params} label="년" />}
+      />
+
+
+      <Autocomplete
+      sx={{width:"30%"}}
+      name='month'
+        options={monthOptions}
+        getOptionLabel={(option) => option}
+        value={month}
+        onChange={handleMonthChange}
+        renderInput={(params) => <TextField {...params} label="월" />}
+      />
+
+      <Autocomplete
+      name='day'
+      sx={{width:"30%"}}
+        options={dayOptions}
+        getOptionLabel={(option) => option}
+        value={day}
+        onChange={handleDayChange}
+        renderInput={(params) => <TextField {...params} label="일" />}
+      />
+              </Grid>
+             
             </Grid>
             <Button
               type="submit"

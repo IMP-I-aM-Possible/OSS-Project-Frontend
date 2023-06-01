@@ -23,7 +23,9 @@ export default function AppNewsUpdate({ title, subheader, list, ...other }) {
       <Scrollbar>
         <Stack spacing={3} sx={{ p: 3, pr: 0 }}>
           {list.map((news) => (
+            // <Link  key={news.nid} style={{ textDecoration: "none" ,color: 'inherit' }} onClick={()=>{window.location.href="/dashboard/productsdetail/"+news.nid}}>
             <NewsItem key={news.nid} news={news} />
+            /* </Link> */
           ))}
         </Stack>
       </Scrollbar>
@@ -31,7 +33,7 @@ export default function AppNewsUpdate({ title, subheader, list, ...other }) {
       <Divider />
 
       <Box sx={{ p: 2, textAlign: 'right' }}>
-        <Button size="small" color="inherit" endIcon={<Iconify icon={'eva:arrow-ios-forward-fill'} />}>
+        <Button size="small" color="inherit" endIcon={<Iconify icon={'eva:arrow-ios-forward-fill'} onClick={() => {window.location.href="/dashboard/products"}}/>}>
           View all
         </Button>
       </Box>
@@ -58,18 +60,14 @@ function NewsItem({ news }) {
       <Box component="img" alt={name} src={server.ip+"image/"+nid+'.jpg'} sx={{ width: 48, height: 48, borderRadius: 1.5, flexShrink: 0 }} />
 
       <Box sx={{ minWidth: 240, flexGrow: 1 }}>
-        <Link color="inherit" variant="subtitle2" underline="hover" noWrap>
+        <Link color="inherit" variant="subtitle2" underline="hover" noWrap onClick={()=>{window.location.href="/dashboard/productsdetail/"+news.nid}}>
           {name}
         </Link>
 
         <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-          {JSON.stringify(nutrient_info)}
+          {company}
         </Typography>
       </Box>
-
-      <Typography variant="caption" sx={{ pr: 3, flexShrink: 0, color: 'text.secondary' }}>
-        {company}
-      </Typography>
     </Stack>
   );
 }

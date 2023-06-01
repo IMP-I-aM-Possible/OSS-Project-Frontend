@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
-import { Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment } from '@mui/material';
+import { Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment, Switch } from '@mui/material';
 // component
 import Iconify from '../../../components/iconify';
 
@@ -38,7 +38,7 @@ UserListToolbar.propTypes = {
   onFilterName: PropTypes.func,
 };
 
-export default function UserListToolbar({ numSelected, filterName, onFilterName, onDelete }) {
+export default function UserListToolbar({ numSelected, filterName, onFilterName, onDelete,switchchecked,handleswitchChange}) {
   return (
     <StyledRoot
       sx={{
@@ -56,7 +56,7 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
         <StyledSearch
           value={filterName}
           onChange={onFilterName}
-          placeholder="Search user..."
+          placeholder="찾을 영양제를 입력하세요"
           startAdornment={
             <InputAdornment position="start">
               <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
@@ -73,10 +73,12 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <Iconify icon="ic:round-filter-list" />
-          </IconButton>
+        <Tooltip title="이전기록 보기">
+          <Switch
+            checked={switchchecked}
+            onChange={handleswitchChange}
+            inputProps={{ 'aria-label': 'controlled' }}
+            />
         </Tooltip>
       )}
     </StyledRoot>

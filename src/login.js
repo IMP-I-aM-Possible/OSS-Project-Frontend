@@ -12,11 +12,13 @@ import Container from '@mui/material/Container';
 import { FetchLogin } from "./servies";
 import { ContactSupportOutlined } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
-
+import { useDispatch } from 'react-redux';
+import { setId } from './store/reducers/id';
 export default function Login() {
   const [uid, setid] = useState('');    // 사용자가 입력한 아이디 저장
   const [pw, setPw] = useState('');    // 사용자가 입력한 비밀번호 저장
   console.log(uid)
+  const dispatch = useDispatch();
   let sessionStorage = window.sessionStorage
   const req = {
     uid,
@@ -24,13 +26,16 @@ export default function Login() {
   }; 
   async function checklogin(){   
     const loginres =  await FetchLogin(req);
-    console.log(loginres)
+    console.log(loginres.uid)
+    dispatch(setId(loginres.uid))
      if (loginres.sc=='200'){
        console.log('성공')
-      sessionStorage.setItem("uid", loginres.uid);
-      sessionStorage.setItem("accessToken", loginres.accessToken);
-      sessionStorage.setItem("refreshToken", loginres.refreshToken);
-       window.location.replace("/dashboard/app");  
+       sessionStorage.setItem("uid", loginres.uid);
+        sessionStorage.setItem("accessToken", loginres.accessToken);
+        sessionStorage.setItem("refreshToken", loginres.refreshToken);
+        setTimeout(() => {
+          window.location.replace("/dashboard/app");
+        }, 10); 
      }
    }
 
@@ -55,7 +60,6 @@ export default function Login() {
         <Avatar src="/broken-image.jpg" />
         <Typography component="h1" variant="h5">
           Sign in
-          {useSelector((state) => state.id.id)}
         </Typography>
         <TextField
           margin="normal"

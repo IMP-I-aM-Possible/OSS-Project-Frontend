@@ -1,7 +1,7 @@
 import { useState } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Input, Slide, Button, IconButton, InputAdornment, ClickAwayListener } from '@mui/material';
+import { Input, Slide, Button, IconButton, InputAdornment, ClickAwayListener, ToggleButton, ToggleButtonGroup } from '@mui/material';
 // utils
 import { bgBlur } from '../../../utils/cssStyles';
 // component
@@ -30,11 +30,22 @@ const StyledSearchbar = styled('div')(({ theme }) => ({
   },
 }));
 
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+  display: 'flex',
+  marginRight: theme.spacing(1),
+  marginLeft: theme.spacing(1),
+  flexDirection: 'row',
+  '& .MuiToggleButton-root': {
+    minWidth: 39,
+  },
+}));
+
 // ----------------------------------------------------------------------
 
 export default function Searchbar() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
+  const [ratio, setRatio] = useState('name');
   const handleOpen = () => {
     setOpen(!open);
   };
@@ -43,10 +54,15 @@ export default function Searchbar() {
     setOpen(false);
     //window.location.replace("/dashboard/products/"+value); 
   };
-  const  handleSearch = () => {
+
+  const handleSearch = () => {
     setOpen(false);
-    window.location.replace("/dashboard/products?search="+value+"&type=1"); 
-  }
+    let searchQuery = "/dashboard/products?search=" + value;
+    if (ratio) {
+      searchQuery += "&value=" + ratio;
+    }
+    window.location.replace(searchQuery);
+  };
 
   return (
     <ClickAwayListener onClickAway={handleClose}>
@@ -59,19 +75,35 @@ export default function Searchbar() {
 
         <Slide direction="down" in={open} mountOnEnter unmountOnExit>
           <StyledSearchbar>
+            <StyledToggleButtonGroup
+              value={ratio}
+              exclusive
+              onChange={(event, newRatio) => setRatio(newRatio)}
+              size="small"
+              aria-label="Ratio"
+            >
+              <ToggleButton value="name" aria-label="Name">
+                이름
+              </ToggleButton>
+              <ToggleButton value="symptom" aria-label="Symptom">
+                증상
+              </ToggleButton>
+            </StyledToggleButtonGroup>
+
             <Input
               autoFocus
               fullWidth
               disableUnderline
               placeholder="Search…"
-              onChange={(e)=>setValue(e.target.value)}
+              onChange={(e) => setValue(e.target.value)}
               startAdornment={
                 <InputAdornment position="start">
                   <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
                 </InputAdornment>
               }
-              sx={{ mr: 1, fontWeight: 'fontWeightBold' }}
+              sx={{ fontWeight: 'fontWeightBold' }}
             />
+
             <Button variant="contained" onClick={handleSearch}>
               Search
             </Button>
