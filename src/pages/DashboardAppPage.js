@@ -160,7 +160,7 @@ else{
                 { name: '권장 섭취량', data: [100, 100, 100, 100, 100, 100] },
                 { name: '다른이용자평균', data: [80, 40, 90, 80, 70, 60] },
                 { name: uid+'님 의 섭취량', data:neednut.map(nutrient => {
-                  const { eating, commend } = res.userEating[nutrient];
+                  const { eating, commend } = res.userEating[nutrient]==undefined?{eating:"0",commend:"1"}:res.userEating[nutrient]
                   console.log(eating/commend);
                   return eating/commend*100>100?100:eating/commend*100
                 }) },

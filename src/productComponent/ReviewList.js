@@ -43,18 +43,21 @@ export default function AlignItemsList(props) {
 
   return (
     <Card sx={{ bgcolor: '#fafafa', p: 2 }}>
+      
       {currentReviews.map((review) => (
+      
         <Card
-          key={review.usname}
+          key={review.idx}
           sx={{ ml: 5, mr: 5, mb: 5, mt: 5 }}
           component="div"
         >
+
           <ListItem component="div" alignItems="flex-start">
             <ListItemAvatar>
-              <Avatar alt={review.usname} src="/static/images/avatar/1.jpg" />
+              <Avatar alt={review.uid} src="/static/images/avatar/1.jpg" />
             </ListItemAvatar>
             <ListItemText
-  primary={review.usname}
+  primary={review.uid}
   secondary={
     <>
       <Typography component="div">
@@ -65,7 +68,7 @@ export default function AlignItemsList(props) {
           <Rating
             component="div"
             name="text-feedback"
-            value={review.rscore}
+            value={review.rating}
             readOnly
             precision={0.5}
             emptyIcon={
@@ -73,11 +76,11 @@ export default function AlignItemsList(props) {
             }
           />
           <Box component="div" sx={{ ml: 2 }}>
-            {labels[review.rscore]}
+            {labels[review.rating]}
           </Box>
         </Box>
       </Typography>
-      <Typography component="div">{review.text}</Typography>
+      <Typography component="div">{review.review}</Typography>
     </>
   }
 />

@@ -87,7 +87,7 @@ export const FetchLogin = async (test) => {
       console.log(test)
       console.log(server.ip+'signup')
       //하는중 원래는 아래쪽
-      return await axios.post('http://192.168.1.22:3000/signup', test)
+      return await axios.post(server.ip+'signup', test)
         .then(function (response) {
             console.log(response.data.sc)
             if(response.data.sc == '200')          
